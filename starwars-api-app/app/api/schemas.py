@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 from datetime import date
 from typing import Generic, List, Optional, TypeVar
 from uuid import UUID
@@ -5,6 +6,7 @@ from uuid import UUID
 from fastapi import Query
 from pydantic import BaseModel
 
+from ..utils import parse_value
 
 class BaseFilm(BaseModel):
     """Base schema for a film entity."""
@@ -46,4 +48,84 @@ class BaseStarship(BaseModel):
     hyperdrive_rating: Optional[float] = None
     MGLT: Optional[int] = None
     starship_class: str
+
+
+class SWAPIParsedModel(BaseModel, ABC):
+    """Abstract base class for parsed SWAPI models."""
+
+    swapi_url: str
+
+    @classmethod
+    @abstractmethod
+    def from_swapi(cls, data: dict) -> "SWAPIParsedModel":
+        """Create an instance from raw SWAPI JSON."""
+        raise NotImplementedError("`from_swapi` must be implemented in subclasses")
+
+
+class FilmSWAPICreate(SWAPIParsedModel, BaseFilm):
+    """Schema for creating a film from SWAPI data."""
+
+    character_urls: List[str]
+    starship_urls: List[str]
+
+    @classmethod
+    def from_swapi(cls, data: dict):
+        return cls(
+            swapi_url=data["url"],
+            title=data.get("title"),
+            episode_id=int(data.get("episode_id")),
+            opening_crawl=data.get("opening_crawl"),
+            director=data.get("director"),
+            producer=data.get("producer"),
+            release_date=data.get("release_date"),
+            character_urls=data.get("characters", []),
+            starship_urls=data.get("starships", []),
+        )
+
+
+class CharacterSWAPICreate(SWAPIParsedModel, BaseCharacter):
+    """Schema for creating a character from SWAPI data."""
+
+    @classmethod
+    def from_swapi(cls, data: dict):
+        return cls(
+            swapi_url=data["url"],
+            name=data["name"],
+            height=parse_value(data["height"], "int"),
+            mass=parse_value(data["mass"], "int"),
+            hair_color=data.get("hair_color"),
+            skin_color=data.get("skin_color"),
+            eye_color=data.get("eye_color"),
+            birth_year=data.get("birth_year"),
+            gender=data.get("gender"),
+        )
+
+
+class StarshipSWAPICreate(SWAPIParsedModel, BaseStarship):
+    """Schema for creating a starship from SWAPI data."""
+
+    pilot_urls: List[str]
+
+    @classmethod
+    def from_swapi(cls, data: dict):
+        return cls(
+            swapi_url=data["url"],
+            name=data["name"],
+            model=data["model"],
+            manufacturer=data["manufacturer"],
+            cost_in_credits=parse_value(data.get("cost_in_credits"), "int"),
+            length=parse_value(data.get("length"), "float"),
+            max_atmosphering_speed=parse_value(
+                data.get("max_atmosphering_speed"), "int"
+            ),
+            crew=data.get("crew"),
+            passengers=parse_value(data.get("passengers"), "int"),
+            cargo_capacity=parse_value(data.get("cargo_capacity"), "int"),
+            consumables=data.get("consumables"),
+            hyperdrive_rating=parse_value(data.get("hyperdrive_rating"), "float"),
+            MGLT=parse_value(data.get("MGLT"), "int"),
+            starship_class=data["starship_class"],
+            pilot_urls=data.get("pilots", []),
+        )
+
 
