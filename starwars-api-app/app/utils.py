@@ -1,5 +1,14 @@
 from typing import Optional
 
+import httpx
+
+
+async def fetch_json(client: httpx.AsyncClient, url: str):
+    """Fetch a single resource as JSON."""
+    response = await client.get(url)
+    response.raise_for_status()
+    return response.json()
+
 
 def parse_int(value: str) -> Optional[int]:
     """Convert string to int if possible, else None."""
