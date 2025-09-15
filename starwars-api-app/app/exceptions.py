@@ -32,3 +32,26 @@ class DatabaseError(BaseError):
     status = status.HTTP_503_SERVICE_UNAVAILABLE
 
 
+def add_exception_handlers(app: FastAPI):
+    """Register exception handlers for all subclasses of BaseError."""
+    for exception_class in BaseError.__subclasses__():
+        app.add_exception_handler(
+            exception_class,
+            _get_handler(
+                status=exception_class.status,
+                detail=exception_class.__doc__,
+            ),
+        )
+
+
+def _get_handler(status: int, detail: str):
+    """Return a JSON error handler for the given status and detail."""
+
+    async def handler(request: Request, exc: BaseError):
+        """Handle a raised BaseError and return a JSON error response."""
+        return JSONResponse(
+            status_code=status,
+            content={"error": detail, "exception": str(exc)},
+        )
+
+    return handler
