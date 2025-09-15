@@ -60,3 +60,20 @@ class GetService:
 
         return query, count_query
 
+
+class FilmGetService(GetService):
+    """Service class for retrieving Film entities."""
+    def __init__(self, session: AsyncSession):
+        super().__init__(model=Film, session=session, filter_field="title")
+
+
+class CharacterGetService(GetService):
+    """Service class for retrieving Character entities."""
+    def __init__(self, session: AsyncSession):
+        super().__init__(model=Character, session=session, filter_field="name")
+
+
+class StarshipGetService(GetService):
+    """Service class for retrieving Starship entities."""
+    def __init__(self, session: AsyncSession):
+        super().__init__(model=Starship, session=session, filter_field="name")
