@@ -32,6 +32,36 @@ class DatabaseError(BaseError):
     status = status.HTTP_503_SERVICE_UNAVAILABLE
 
 
+def exception_handler(session_arg: str = "session"):
+    """Decorator to wrap async functions with graceful error handling."""
+
+    def decorator(func):
+        @wraps(func)
+        async def wrapper(*args, **kwargs):
+            # Get session either from kwargs or from self
+            session = kwargs.get(session_arg)
+            if not session and args:
+                self_obj = args[0]
+                session = getattr(self_obj, session_arg, None)
+
+            try:
+                return await func(*args, **kwargs)
+            except (OSError, DBAPIError, SQLAlchemyError) as e:
+                if session:
+                    await session.rollback()
+                raise DatabaseError(str(e))
+            except BaseError as e:
+                raise e
+            except Exception as e:
+                if session:
+                    await session.rollback()
+                raise BaseError(str(e))
+
+        return wrapper
+
+    return decorator
+
+
 def add_exception_handlers(app: FastAPI):
     """Register exception handlers for all subclasses of BaseError."""
     for exception_class in BaseError.__subclasses__():
