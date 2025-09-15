@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from scalar_fastapi import get_scalar_api_reference
+from .exceptions import add_exception_handlers
 
 description = """
 Star Wars API is a simple API for managing the Star Wars universe.
@@ -12,6 +13,8 @@ app = FastAPI(
     redoc_url=None,
     version="0.1.0",
 )
+add_exception_handlers(app)
+
 
 @app.get("/")
 async def root() -> dict:
