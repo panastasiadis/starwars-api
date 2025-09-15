@@ -19,6 +19,13 @@ class SyncResponse(BaseModel):
     synced_entities: dict[str, int] = None
 
 
+class PaginationParams(BaseModel):
+    """Query parameters for pagination."""
+
+    offset: int = Query(0, ge=0, description="Pagination offset")
+    limit: int = Query(10, ge=1, le=100, description="Pagination limit")
+
+
 class PaginatedResponse(BaseModel, Generic[T]):
     """Generic paginated response wrapper."""
 

@@ -10,6 +10,8 @@ from ..services.get_services import (
 )
 
 
+from .schemas import PaginationParams
+
 # Async database session dependency
 AsyncSessionDep = Annotated[AsyncSession, Depends(get_session)]
 
@@ -31,6 +33,9 @@ def get_starship_service(session: AsyncSessionDep) -> StarshipGetService:
 
     return StarshipGetService(session)
 
+
+# Dependency type aliases
+PaginationParamsDep = Annotated[PaginationParams, Depends()]
 FilmServiceDep = Annotated[FilmGetService, Depends(get_film_service)]
 CharacterServiceDep = Annotated[CharacterGetService, Depends(get_character_service)]
 StarshipServiceDep = Annotated[StarshipGetService, Depends(get_starship_service)]
