@@ -88,3 +88,8 @@ To run all tests:
 docker compose exec srv-starwars-api bash
 uv run pytest --cov=app
 ```
+
+##  Test Coverage Report
+
+<img width="425" height="524" alt="image" src="https://github.com/user-attachments/assets/69351917-f5d6-46ae-90a3-43d2dc901789" />
+
