@@ -54,6 +54,13 @@ async def get_films(
     return result
 
 
+@router.get("/films/{id}")
+async def get_film(id: UUID, service: FilmServiceDep) -> FilmRead:
+    """Retrieve a film by its unique ID."""
+
+    return await service.get(id)
+
+
 @router.get("/characters")
 async def get_characters(
     service: CharacterServiceDep,
@@ -69,6 +76,12 @@ async def get_characters(
     )
     return result
 
+
+@router.get("/characters/{id}")
+async def get_character(id: UUID, service: CharacterServiceDep) -> CharacterRead:
+    """Retrieve a character by its unique ID."""
+
+    return await service.get(id)
 
 
 @router.get("/starships")
@@ -87,3 +100,8 @@ async def get_starships(
     return result
 
 
+@router.get("/starships/{id}")
+async def get_starship(id: UUID, service: StarshipServiceDep) -> StarshipRead:
+    """Retrieve a starship by its unique ID."""
+
+    return await service.get(id)
