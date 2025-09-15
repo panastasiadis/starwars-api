@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 from scalar_fastapi import get_scalar_api_reference
+
+from .api.router import router
 from .exceptions import add_exception_handlers
 
 description = """
@@ -13,6 +15,8 @@ app = FastAPI(
     redoc_url=None,
     version="0.1.0",
 )
+
+app.include_router(router)
 add_exception_handlers(app)
 
 
