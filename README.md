@@ -1,6 +1,6 @@
 # StarWars API
 
-A FastAPI-based asynchronous REST API for Star Wars data, featuring films, characters, and starships. Data is synchronized from the public SWAPI and stored in a PostgreSQL database. The project uses SQLModel ORM, Alembic for migrations, and is containerized with Docker.
+A FastAPI-based asynchronous REST API for Star Wars data, featuring films, characters, and starships. Data is synchronized from the public API  **https://swapi.info** and stored in a PostgreSQL database. The project uses SQLModel ORM, Alembic for migrations, and is containerized with Docker.
 
 ## Features
 
