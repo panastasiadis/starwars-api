@@ -8,12 +8,25 @@ from pydantic import BaseModel
 
 from ..utils import parse_value
 
+T = TypeVar("T")
+
+
 class SyncResponse(BaseModel):
     """Response model for synchronization results."""
 
     status: str
     message: str = None
     synced_entities: dict[str, int] = None
+
+
+class PaginatedResponse(BaseModel, Generic[T]):
+    """Generic paginated response wrapper."""
+
+    total: int
+    offset: int
+    limit: int
+    items: List[T]
+
 
 class UUIDRef(BaseModel):
     """Reference model containing UUID."""
@@ -164,3 +177,20 @@ class StarshipRead(BaseStarship):
     pilots: List[UUIDRef]
     films: List[UUIDRef]
 
+
+class PaginatedFilmRead(PaginatedResponse[FilmRead]):
+    """Paginated response for films."""
+
+    items: List[FilmRead]
+
+
+class PaginatedCharacterRead(PaginatedResponse[CharacterRead]):
+    """Paginated response for characters."""
+
+    items: List[CharacterRead]
+
+
+class PaginatedStarshipRead(PaginatedResponse[StarshipRead]):
+    """Paginated response for starships."""
+
+    items: List[StarshipRead]
