@@ -1,9 +1,8 @@
-version: '3'
+version: "3"
 
 volumes:
   vlm-starwars-db:
     name: vlm-starwars-db
-
 
 services:
   srv-starwars-db:
@@ -17,4 +16,21 @@ services:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DB}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 10s
+      retries: 5
 
+  srv-starwars-api:
+    build: .
+    container_name: cntr-starwars-api
+    ports:
+      - 8000:8000
+    environment:
+      - POSTGRES_SERVER=cntr-starwars-db
+      - POSTGRES_PORT=5432
+    env_file:
+      - .env
+    depends_on:
+      srv-starwars-db:
+        condition: service_healthy
