@@ -8,6 +8,14 @@ from pydantic import BaseModel
 
 from ..utils import parse_value
 
+class SyncResponse(BaseModel):
+    """Response model for synchronization results."""
+
+    status: str
+    message: str = None
+    synced_entities: dict[str, int] = None
+
+
 class BaseFilm(BaseModel):
     """Base schema for a film entity."""
 
