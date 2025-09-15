@@ -15,6 +15,11 @@ class SyncResponse(BaseModel):
     message: str = None
     synced_entities: dict[str, int] = None
 
+class UUIDRef(BaseModel):
+    """Reference model containing UUID."""
+
+    id: UUID
+
 
 class BaseFilm(BaseModel):
     """Base schema for a film entity."""
@@ -136,4 +141,26 @@ class StarshipSWAPICreate(SWAPIParsedModel, BaseStarship):
             pilot_urls=data.get("pilots", []),
         )
 
+
+class FilmRead(BaseFilm):
+    """Read schema for film with relations."""
+
+    id: UUID
+    characters: List[UUIDRef]
+    starships: List[UUIDRef]
+
+
+class CharacterRead(BaseCharacter):
+    """Read schema for character with relations."""
+
+    films: List[UUIDRef]
+    starships: List[UUIDRef]
+
+
+class StarshipRead(BaseStarship):
+    """Read schema for starship with relations."""
+
+    id: UUID
+    pilots: List[UUIDRef]
+    films: List[UUIDRef]
 
